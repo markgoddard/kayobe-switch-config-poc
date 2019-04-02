@@ -1,0 +1,15 @@
+---
+- hosts: switches
+  gather_facts: no
+  tasks:
+    - name: Display global switch config
+      debug: var=switch_config
+
+    - name: Generate interface config (for debugging)
+      template:
+        src: switch-config-interfaces.yml.j2
+        dest: switch-config-interfaces-{{ inventory_hostname }}.yml
+      delegate_to: localhost
+
+    - name: Display per-interface switch config
+      debug: var=switch_config_interfaces

@@ -1,0 +1,19 @@
+---
+# Model of the switch and its connectivity.
+switch_model:
+  interfaces:
+    xe-0/0/0:
+      host: controller0
+      type: hsn
+    xe-0/0/1:
+      host: controller1
+      type: hsn
+    xe-0/0/2:
+      host: controller2
+      type: hsn
+    xe-0/0/3:
+      host: compute0
+      type: hsn
+    xe-0/0/4:
+      host: compute1
+      type: hsn

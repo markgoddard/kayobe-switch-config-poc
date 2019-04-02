@@ -1,0 +1,52 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+---
+{% macro controller_bmc_interface(host) %}
+- no shutdown
+- lldp enable
+- switchport mode access
+- vlan 42
+{% endmacro %}
+
+{% macro compute_bmc_interface(host) %}
+- no shutdown
+- lldp enable
+- switchport mode access
+- vlan 43
+{% endmacro %}
+
+{% macro controller_hsn_interface(host) %}
+- no shutdown
+- lldp enable
+- switchport mode trunk
+{% endmacro %}
+
+{% macro compute_hsn_interface(host) %}
+- no shutdown
+- lldp enable
+- switchport mode access
+- vlan 44 untagged
+- vlan 45 untagged
+{% endmacro %}
+
+{% macro interface_config(host, type) %}
+{% if type == 'bmc' %}
+{% if host.startswith('controller') %}
+{{ controller_bmc_interface(host) }}
+{% elif host.startswith('compute') %}
+{{ compute_bmc_interface(host) }}
+{% endif %}
+{% else %}
+{% if host.startswith('controller') %}
+{{ controller_hsn_interface(host) }}
+{% elif host.startswith('compute') %}
+{{ compute_hsn_interface(host) }}
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+{% for name, value in switch_model.interfaces.items() %}
+{{ name }}:
+  description: {{ value.host }}
+  config:
+    {{ interface_config(value.host, value.type) | indent(4) }}
+{% endfor %}
